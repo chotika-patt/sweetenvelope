@@ -290,35 +290,68 @@ export default function SweetEnvelope() {
       {/* ── LOGIN ── */}
       {page === "login" && (
         <main style={styles.centerPage}>
-          <div style={{ position: "relative", marginTop: 10 }}>
+          <div style={styles.card}>
+            <div style={{ fontSize: 54, marginBottom: 12 }}>💌</div>
+            <h2 style={styles.cardTitle}>SweetEnvelope</h2>
+            <p style={styles.cardSub}>เข้าสู่ระบบเพื่อส่งและรับซองกระจก 🌸</p>
+
             <input
-              style={{ ...styles.input, paddingRight: 44 }}
-              type={showPass ? "text" : "password"}
-              placeholder="รหัสผ่าน"
-              value={loginPass}
-              onChange={(e) => setLoginPass(e.target.value)}
+              style={styles.input}
+              placeholder="ชื่อผู้ใช้"
+              value={loginUser}
+              onChange={(e) => setLoginUser(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && doLogin()}
-              autoComplete="current-password"
+              autoComplete="username"
             />
+
+            <div style={{ position: "relative", marginTop: 10 }}>
+              <input
+                style={{ ...styles.input, paddingRight: 44 }}
+                type={showPass ? "text" : "password"}
+                placeholder="รหัสผ่าน"
+                value={loginPass}
+                onChange={(e) => setLoginPass(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && doLogin()}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(!showPass)}
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 18,
+                  color: "#9B8AAB",
+                  padding: 4,
+                  lineHeight: 1,
+                }}
+              >
+                {showPass ? "🙈" : "👁️"}
+              </button>
+            </div>
+
             <button
-              type="button"
-              onClick={() => setShowPass(!showPass)}
               style={{
-                position: "absolute",
-                right: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: 18,
-                color: "#9B8AAB",
-                padding: 4,
-                lineHeight: 1,
+                ...styles.primaryBtn,
+                marginTop: 16,
+                width: "100%",
+                opacity: loginLoading ? 0.7 : 1,
               }}
+              onClick={doLogin}
+              disabled={loginLoading}
             >
-              {showPass ? "🙈" : "👁️"}
+              {loginLoading ? "⏳ กำลังเข้าสู่ระบบ..." : "💌 เข้าสู่ระบบ"}
             </button>
+
+            {loginErr && (
+              <div style={styles.errBox}>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+            )}
+            <div style={styles.hintBox}>💡 ทดลอง: user01 / pass01</div>
           </div>
         </main>
       )}
