@@ -945,7 +945,8 @@ export default function SweetEnvelope() {
         </div>
       )}
 
-      <style>{`
+      <style>
+        {`
   :root {
     --pink-light: #FFE4EC; --pink: #FFB7C5; --pink-dark: #E8748A;
     --blue-light: #E3F3FF; --blue: #B3D9F7; --blue-dark: #5AAEE0;
@@ -1011,7 +1012,32 @@ export default function SweetEnvelope() {
       box-shadow: 0 10px 28px rgba(255,183,197,0.4);
     }
   }
-`}</style>
+`}
+        {/* ── FOOTER ── */}
+        <footer
+          style={{
+            textAlign: "center",
+            padding: "20px",
+            fontSize: 13,
+            color: "#9B8AAB",
+            marginTop: 20,
+          }}
+        >
+          หากพบปัญหาติดต่อ{" "}
+          <a
+            href="https://instagram.com/_k.xt0r"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#E8748A",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            @_k.xt0r
+          </a>
+        </footer>
+      </style>
     </>
   );
 }
