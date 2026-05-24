@@ -351,7 +351,6 @@ export default function SweetEnvelope() {
             {loginErr && (
               <div style={styles.errBox}>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
             )}
-            <div style={styles.hintBox}>💡 ทดลอง: user01 / pass01</div>
           </div>
         </main>
       )}
@@ -1200,6 +1199,10 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: "center",
     cursor: "pointer",
     transition: "transform 0.22s, box-shadow 0.22s",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 4,
   },
   writtenCard: { borderColor: "#B5DEB5", background: "rgba(240,255,240,0.92)" },
   personAvatar: {
@@ -1235,16 +1238,19 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   personTag: {
-    display: "inline-block",
+    display: "block", // ← เปลี่ยนจาก inline-block
+    width: "100%", // ← เพิ่ม
     fontSize: 12,
     color: "#A07800",
     background: "#FFF0A8",
     borderRadius: 10,
     padding: "3px 10px",
-    marginBottom: 10,
+    marginBottom: 2,
   },
+
   writtenTag: {
-    display: "inline-block",
+    display: "block", // ← เปลี่ยนจาก inline-block
+    width: "100%", // ← เพิ่ม
     fontSize: 11,
     fontWeight: 700,
     color: "#2E7D32",
@@ -1252,17 +1258,20 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1.5px solid #A5D6A7",
     borderRadius: 10,
     padding: "2px 9px",
-    marginBottom: 6,
+    marginBottom: 2,
   },
+
   writeCardBtn: {
     background: "linear-gradient(135deg,#FFB7C5,#FF8FAB)",
     border: "none",
     color: "#fff",
-    padding: "5px 14px",
+    padding: "7px 14px",
     borderRadius: 14,
     cursor: "pointer",
     fontSize: 12,
     fontWeight: 600,
+    width: "100%", // ← เพิ่ม ให้กว้างเต็ม
+    marginTop: 4, // ← เพิ่ม
   },
   formLabel: {
     fontSize: 13,
@@ -1386,7 +1395,7 @@ const styles: Record<string, React.CSSProperties> = {
     background:
       "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.2) 28px,rgba(255,183,197,0.2) 29px)",
     backgroundPosition: "0 34px",
-    padding: "12px 10px",
+    padding: "8px 10px",
     borderRadius: 12,
     minHeight: 120,
     whiteSpace: "pre-wrap",
