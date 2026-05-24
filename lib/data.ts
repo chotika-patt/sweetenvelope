@@ -1,7 +1,7 @@
 import { Person, Account } from '@/types';
 export const PEOPLE: Person[] = [
   { id: 1,  name: 'สกาย',      emoji: '👑', tag: 'ประธาน',            photo: 'https://ibb.co/M5BkD665'},
-  { id: 2,  name: 'ข้าวจ้าว',  emoji: '💰', tag: 'อำนวยการคลัง',      photo: undefined },
+  { id: 2,  name: 'ข้าวจ้าว',  emoji: '💰', tag: 'อำนวยการคลัง',      photo: 'https://ibb.co/wZKskbHq' },
   { id: 3,  name: 'ส้มส้ม',    emoji: '📝', tag: 'เลขานุการ',          photo: undefined },
   { id: 4,  name: 'แน้ม',      emoji: '🎪', tag: 'กิจกรรม',            photo: undefined },
   { id: 5,  name: 'ทอมปาล์ม', emoji: '⚖️', tag: 'พิทักษ์สิทธิ์',     photo: undefined },
