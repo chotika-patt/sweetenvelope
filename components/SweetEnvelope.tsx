@@ -1462,7 +1462,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#5A4A6A",
     background:
       "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.35) 28px, rgba(255,183,197,0.35) 29px)",
-    backgroundPosition: "0 0",
+    backgroundPosition: "0 8px",
     backgroundAttachment: "local",
     outline: "none",
     resize: "vertical",
@@ -1559,11 +1559,12 @@ const styles: Record<string, React.CSSProperties> = {
   },
   modalBody: {
     fontSize: 16,
-    lineHeight: 1.85,
+    lineHeight: "29px",
     color: "#5A4A6A",
     background:
       "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.2) 28px,rgba(255,183,197,0.2) 29px)",
-    backgroundPosition: "0 34px",
+    backgroundPosition: "0 8px",
+    backgroundAttachment: "local", 
     padding: "8px 10px",
     borderRadius: 12,
     minHeight: 120,
