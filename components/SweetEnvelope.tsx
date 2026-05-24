@@ -66,6 +66,10 @@ export default function SweetEnvelope() {
 
   const [showPass, setShowPass] = useState(false);
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   /* ── fetch inbox ── */
   const fetchInbox = useCallback(async (personId: number) => {
     setInboxLoading(true);
@@ -138,6 +142,12 @@ export default function SweetEnvelope() {
     }
     setSending(true);
     try {
+      let imageUrl = "";
+      if (imageFile) {
+        setUploadingImage(true);
+        imageUrl = await uploadImage(imageFile);
+        setUploadingImage(false);
+      }
       const me = currentUser
         ? PEOPLE.find((p) => p.id === currentUser.personId)
         : null;
@@ -154,6 +164,7 @@ export default function SweetEnvelope() {
           letterBody: letterBody.trim(),
           date: thaiDate(new Date()),
           sentByPersonId: currentUser?.personId ?? null,
+          imageUrl,
         }),
       });
       if (currentPerson) localStorage.removeItem(`draft_${currentPerson.id}`);
@@ -177,10 +188,27 @@ export default function SweetEnvelope() {
   /* ── draft key ── */
   const draftKey = currentPerson ? `draft_${currentPerson.id}` : null;
 
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "sweetenvelope"); // ← ตั้งใน Cloudinary
+    const r = await fetch(
+      "https://api.cloudinary.com/v1_1/dqunakacq/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+    const d = await r.json();
+    return d.secure_url;
+  };
+
   /* ── โหลด draft เมื่อเปิดหน้าเขียน ── */
   const openWrite = (p: Person) => {
     setCurrentPerson(p);
     setAnon(false);
+    setImageFile(null);
+    setImagePreview("");
     const me = currentUser
       ? PEOPLE.find((x) => x.id === currentUser.personId)
       : null;
@@ -799,6 +827,87 @@ export default function SweetEnvelope() {
                 {letterBody.length} / 2000 ตัวอักษร
               </div>
             </div>
+            {/* แนบรูป */}
+            <div style={{ marginBottom: 18 }}>
+              <div style={styles.formLabel}>🖼️ แนบรูปภาพ (ไม่บังคับ)</div>
+
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  background: "#E3F3FF",
+                  border: "1.5px dashed #B3D9F7",
+                  borderRadius: 14,
+                  padding: "10px 16px",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 5 * 1024 * 1024) {
+                      alert("รูปใหญ่เกิน 5MB นะ");
+                      return;
+                    }
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                  }}
+                />
+                <span style={{ fontSize: 20 }}>📎</span>
+                <span
+                  style={{ fontSize: 14, color: "#5AAEE0", fontWeight: 600 }}
+                >
+                  {imageFile ? imageFile.name : "คลิกเพื่อเลือกรูป"}
+                </span>
+              </label>
+
+              {imagePreview && (
+                <div
+                  style={{
+                    marginTop: 10,
+                    position: "relative",
+                    display: "inline-block",
+                  }}
+                >
+                  <img
+                    src={imagePreview}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: 200,
+                      borderRadius: 12,
+                      border: "2px solid #FFB7C5",
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview("");
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: -8,
+                      right: -8,
+                      background: "#E8748A",
+                      border: "none",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      width: 24,
+                      height: 24,
+                      cursor: "pointer",
+                      fontSize: 12,
+                      fontWeight: 700,
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
 
             <button
               style={{
@@ -898,6 +1007,17 @@ export default function SweetEnvelope() {
             >
               จาก: <strong>{openLetter.from}</strong>
             </div>
+            {openLetter.imageUrl && (
+              <img
+                src={openLetter.imageUrl}
+                style={{
+                  width: "100%",
+                  borderRadius: 12,
+                  border: "2px solid #FFE4EC",
+                  marginBottom: 16,
+                }}
+              />
+            )}
             <div style={styles.modalBody}>{openLetter.body}</div>
             <div
               style={{
@@ -946,6 +1066,17 @@ export default function SweetEnvelope() {
                 </span>
               )}
             </div>
+            {openSent.imageUrl && (
+              <img
+                src={openSent.imageUrl}
+                style={{
+                  width: "100%",
+                  borderRadius: 12,
+                  border: "2px solid #FFE4EC",
+                  marginBottom: 16,
+                }}
+              />
+            )}
             <div style={styles.modalBody}>{openSent.body}</div>
             <div
               style={{

@@ -22,4 +22,5 @@ export interface Letter {
   read: boolean;
   sentByPersonId: number | null;
   createdAt: number;
+  imageUrl?: string;
 }

@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { to, from, anon, letterBody, date, sentByPersonId } = body;
+    const { to, from, anon, letterBody, date, sentByPersonId, imageUrl } = body;
 
     if (!to || !from || !letterBody) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       read:           false,
       sentByPersonId: sentByPersonId ?? null,
       createdAt:      Date.now(),
+      imageUrl: imageUrl ?? null,
     };
 
     const ref = await adminDb.collection('letters').add(letter);
