@@ -1,0 +1,33 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #FFB7C5;
+  --pink-light: #FFE4EC;
+  --pink-dark:  #E8748A;
+  --blue:       #B3D9F7;
+  --blue-light: #E3F3FF;
+  --blue-dark:  #5AAEE0;
+  --yellow:     #FFF0A8;
+  --white:      #FFFDF9;
+  --text:       #5A4A6A;
+  --text-light: #9B8AAB;
+  --r-sm: 12px; --r-md: 18px; --r-lg: 24px; --r-xl: 32px;
+  font-family: 'Mali', 'Sarabun', cursive;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 10% 10%, #FFE8F0 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 20%, #DDEEFF 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, #FFFCE0 0%, transparent 60%),
+    #FFF8FC;
+  background-attachment: fixed;
+}
+
+button { font-family: 'Mali', cursive; }
+input, textarea { font-family: 'Mali', cursive; }
