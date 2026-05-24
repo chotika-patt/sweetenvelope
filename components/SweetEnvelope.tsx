@@ -1451,18 +1451,16 @@ const styles: Record<string, React.CSSProperties> = {
   textarea: {
     width: "100%",
     minHeight: 210,
-    paddingTop: "8px",
-    paddingBottom: "14px",
-    paddingLeft: "16px",
-    paddingRight: "16px",
+    padding: "12px 16px",
     border: "1.5px dashed #FFB7C5",
     borderRadius: 18,
     fontSize: 15,
-    lineHeight: "29px",
+    lineHeight: "28px",
     color: "#5A4A6A",
     background:
-      "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.35) 28px, rgba(255,183,197,0.35) 29px)",
-    backgroundPosition: "0 8px",
+      "linear-gradient(transparent calc(28px - 1px), rgba(255,183,197,0.4) calc(28px - 1px), rgba(255,183,197,0.4) 28px, transparent 28px)",
+    backgroundSize: "100% 28px",
+    backgroundPositionY: "12px", // ← ตรงกับ padding-top
     backgroundAttachment: "local",
     outline: "none",
     resize: "vertical",
@@ -1559,13 +1557,14 @@ const styles: Record<string, React.CSSProperties> = {
   },
   modalBody: {
     fontSize: 16,
-    lineHeight: "29px",
+    lineHeight: "28px",
     color: "#5A4A6A",
     background:
-      "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.2) 28px,rgba(255,183,197,0.2) 29px)",
-    backgroundPosition: "0 8px",
-    backgroundAttachment: "local", 
-    padding: "8px 10px",
+      "linear-gradient(transparent calc(28px - 1px), rgba(255,183,197,0.3) calc(28px - 1px), rgba(255,183,197,0.3) 28px, transparent 28px)",
+    backgroundSize: "100% 28px",
+    backgroundPositionY: "8px", // ← ตรงกับ padding-top
+    backgroundAttachment: "local",
+    padding: "8px 14px",
     borderRadius: 12,
     minHeight: 120,
     whiteSpace: "pre-wrap",

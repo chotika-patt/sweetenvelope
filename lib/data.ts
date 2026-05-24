@@ -54,7 +54,7 @@ export const ACCOUNTS: Account[] = [
   { username: 'tom-palm',   password: 'Xr2kG7', personId: 5  },
   { username: 'kaning',     password: 'Bn9tL4', personId: 6  },
   { username: 'chompoo',    password: 'Wf3yM8', personId: 7  },
-  { username: 'weewhite',   password: 'Jd6uH2', personId: 8  },
+  { username: 'wewhite',   password: 'Jd6uH2', personId: 8  },
   { username: 'owen',       password: 'Pk4rB9', personId: 9  },
   { username: 'saifah',     password: 'Lv7wC5', personId: 10 },
   { username: 'phu',        password: 'Rg2qF8', personId: 11 },
