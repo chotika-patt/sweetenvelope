@@ -280,7 +280,7 @@ export default function SweetEnvelope() {
       {page === "dashboard" && currentUser && (
         <div>
           {/* greeting */}
-          <div style={styles.dashHero}>
+          <div style={styles.dashHero} className="dash-hero">
             <div style={styles.dashAvatar}>
               {me?.photo ? (
                 <Image
@@ -308,7 +308,7 @@ export default function SweetEnvelope() {
           </div>
 
           {/* tabs */}
-          <div style={styles.tabs}>
+          <div style={styles.tabs} className="tabs">
             {(["write", "inbox", "sent"] as Tab[]).map((t) => {
               const labels: Record<Tab, string> = {
                 write: "✉️ เขียนถึงใครสักคน",
@@ -321,7 +321,8 @@ export default function SweetEnvelope() {
                   style={{
                     ...styles.tabBtn,
                     ...(tab === t ? styles.tabActive : {}),
-                  }}
+                  }} 
+                  className="tab-btn"
                   onClick={() => switchTab(t)}
                 >
                   {labels[t]}
@@ -343,7 +344,7 @@ export default function SweetEnvelope() {
               >
                 🌟 เลือกซองที่จะเขียนถึง
               </h2>
-              <div style={styles.grid}>
+              <div style={styles.grid} className="people-grid">
                 {PEOPLE.filter((p) => p.id !== currentUser.personId).map(
                   (p) => {
                     const written = writtenTo.has(p.id);
@@ -354,13 +355,14 @@ export default function SweetEnvelope() {
                           ...styles.personCard,
                           ...(written ? styles.writtenCard : {}),
                         }}
+                        className="person-card"
                         onClick={() => openWrite(p)}
                         tabIndex={0}
                         onKeyDown={(e) =>
                           (e.key === "Enter" || e.key === " ") && openWrite(p)
                         }
                       >
-                        <div style={styles.personAvatar}>
+                        <div style={styles.personAvatar} className="person-avatar">
                           {p.photo ? (
                             <Image
                               src={p.photo}
@@ -803,25 +805,72 @@ export default function SweetEnvelope() {
       )}
 
       <style>{`
-        :root {
-          --pink-light: #FFE4EC; --pink: #FFB7C5; --pink-dark: #E8748A;
-          --blue-light: #E3F3FF; --blue: #B3D9F7; --blue-dark: #5AAEE0;
-          --yellow: #FFF0A8; --white: #FFFDF9;
-          --text: #5A4A6A; --text-light: #9B8AAB;
-        }
-        .deco1,.deco2,.deco3,.deco4 {
-          position:fixed; pointer-events:none; z-index:0;
-          font-size:36px; opacity:0.15; user-select:none;
-        }
-        .deco1 { top:8%; left:3%; animation: fl 6s ease-in-out infinite; }
-        .deco2 { top:15%; right:5%; animation: fl 8s ease-in-out infinite 1s; }
-        .deco3 { bottom:22%; left:6%; animation: fl 7s ease-in-out infinite 2s; }
-        .deco4 { bottom:10%; right:4%; animation: fl 9s ease-in-out infinite 0.5s; }
-        @keyframes fl {
-          0%,100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-18px) rotate(8deg); }
-        }
-      `}</style>
+  :root {
+    --pink-light: #FFE4EC; --pink: #FFB7C5; --pink-dark: #E8748A;
+    --blue-light: #E3F3FF; --blue: #B3D9F7; --blue-dark: #5AAEE0;
+    --yellow: #FFF0A8; --white: #FFFDF9;
+    --text: #5A4A6A; --text-light: #9B8AAB;
+  }
+  .deco1,.deco2,.deco3,.deco4 {
+    position:fixed; pointer-events:none; z-index:0;
+    font-size:36px; opacity:0.15; user-select:none;
+  }
+  .deco1 { top:8%; left:3%; animation: fl 6s ease-in-out infinite; }
+  .deco2 { top:15%; right:5%; animation: fl 8s ease-in-out infinite 1s; }
+  .deco3 { bottom:22%; left:6%; animation: fl 7s ease-in-out infinite 2s; }
+  .deco4 { bottom:10%; right:4%; animation: fl 9s ease-in-out infinite 0.5s; }
+  @keyframes fl {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(8deg); }
+  }
+
+  /* ── RESPONSIVE ── */
+
+  /* มือถือ */
+  @media (max-width: 480px) {
+    .people-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+      padding: 0 12px 50px !important;
+    }
+    .person-card {
+      padding: 16px 10px 14px !important;
+    }
+    .person-avatar {
+      width: 72px !important;
+      height: 72px !important;
+    }
+    .dash-hero {
+      padding: 16px 14px 12px !important;
+    }
+    .tabs {
+      padding: 0 12px 12px !important;
+      gap: 6px !important;
+    }
+    .tab-btn {
+      padding: 8px 12px !important;
+      font-size: 12px !important;
+    }
+    .header {
+      padding: 10px 14px !important;
+    }
+  }
+
+  /* แท็บเล็ต */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .people-grid {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+  }
+
+  /* hover effect สำหรับ desktop */
+  @media (hover: hover) {
+    .person-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 28px rgba(255,183,197,0.4);
+    }
+  }
+`}</style>
     </>
   );
 }
@@ -993,10 +1042,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-    gap: 14,
+    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+    gap: 16,
     padding: "0 20px 60px",
-    maxWidth: 960,
+    maxWidth: 1100,
     margin: "0 auto",
     position: "relative",
     zIndex: 1,
@@ -1005,23 +1054,24 @@ const styles: Record<string, React.CSSProperties> = {
     background: "rgba(255,255,255,0.92)",
     borderRadius: 24,
     border: "2px solid #FFE4EC",
-    padding: "18px 12px 14px",
+    padding: "22px 14px 18px",
     textAlign: "center",
     cursor: "pointer",
     transition: "transform 0.22s, box-shadow 0.22s",
   },
   writtenCard: { borderColor: "#B5DEB5", background: "rgba(240,255,240,0.92)" },
   personAvatar: {
-    width: 76,
-    height: 76,
+    width: 90,
+    height: 90,
     borderRadius: "50%",
-    margin: "0 auto 10px",
+    margin: "0 auto 12px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     background: "linear-gradient(135deg,#FFE4EC,#E3F3FF)",
     border: "3px solid #FFB7C5",
-    fontSize: 30,
+    fontSize: 34,
+    overflow: "hidden",
   },
   personAvatarLg: {
     width: 84,
@@ -1036,19 +1086,20 @@ const styles: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   personName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 700,
     color: "#5A4A6A",
-    marginBottom: 4,
+    marginBottom: 5,
   },
+
   personTag: {
     display: "inline-block",
-    fontSize: 11,
+    fontSize: 12,
     color: "#A07800",
     background: "#FFF0A8",
     borderRadius: 10,
-    padding: "2px 8px",
-    marginBottom: 8,
+    padding: "3px 10px",
+    marginBottom: 10,
   },
   writtenTag: {
     display: "inline-block",
