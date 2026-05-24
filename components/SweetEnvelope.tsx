@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { PEOPLE, ACCOUNTS } from "@/lib/data";
 import { Letter, Person } from "@/types";
+import Image from "next/image";
 
 /* ── helpers ── */
 function thaiDate(d: Date) {
@@ -282,15 +283,13 @@ export default function SweetEnvelope() {
           <div style={styles.dashHero}>
             <div style={styles.dashAvatar}>
               {me?.photo ? (
-                <img
+                <Image
                   src={me.photo}
                   alt={me.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                  }}
+                  width={72}
+                  height={72}
+                  priority // โหลดก่อนเลย ไม่ lazy
+                  style={{ objectFit: "cover", borderRadius: "50%" }}
                 />
               ) : (
                 (me?.emoji ?? "👤")
@@ -363,12 +362,12 @@ export default function SweetEnvelope() {
                       >
                         <div style={styles.personAvatar}>
                           {p.photo ? (
-                            <img
+                            <Image
                               src={p.photo}
                               alt={p.name}
+                              width={76}
+                              height={76}
                               style={{
-                                width: "100%",
-                                height: "100%",
                                 objectFit: "cover",
                                 borderRadius: "50%",
                               }}
@@ -516,15 +515,12 @@ export default function SweetEnvelope() {
           >
             <div style={styles.personAvatarLg}>
               {currentPerson.photo ? (
-                <img
+                <Image
                   src={currentPerson.photo}
                   alt={currentPerson.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                  }}
+                  width={84}
+                  height={84}
+                  style={{ objectFit: "cover", borderRadius: "50%" }}
                 />
               ) : (
                 currentPerson.emoji
