@@ -1201,6 +1201,21 @@ export default function SweetEnvelope() {
       box-shadow: 0 10px 28px rgba(255,183,197,0.4);
     }
   }
+    /* คอม — เส้นเริ่มที่ 8px ให้ตรงกับ padding */
+@media (hover: hover) and (pointer: fine) {
+  textarea.lined {
+    padding: 8px 16px 14px !important;
+    background-position: 0 8px !important;
+  }
+}
+
+/* มือถือ/แท็บเล็ต — เส้นเริ่มที่ 0 */
+@media (hover: none), (pointer: coarse) {
+  textarea.lined {
+    padding: 0 16px 14px !important;
+    background-position: 0 0 !important;
+  }
+}
 `}
       </style>
       {/* ── FOOTER ── */}
