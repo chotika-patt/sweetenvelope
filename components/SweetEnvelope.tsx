@@ -132,6 +132,10 @@ export default function SweetEnvelope() {
   /* ── send letter ── */
   const sendLetter = async () => {
     if (!letterBody.trim() || !currentPerson) return;
+    if (!anon && !senderName.trim()) {
+      alert("กรุณาใส่ชื่อของคุณก่อนนะ");
+      return;
+    }
     setSending(true);
     try {
       const me = currentUser
@@ -795,7 +799,10 @@ export default function SweetEnvelope() {
                 opacity: sending ? 0.7 : 1,
               }}
               onClick={sendLetter}
-              disabled={sending || !letterBody.trim()}
+              disabled={
+                sending || !letterBody.trim() || (!anon && !senderName.trim())
+              }
+              
             >
               {sending ? "⏳ กำลังส่ง..." : "📮 ส่งซองกระจก"}
             </button>
