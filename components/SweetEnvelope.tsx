@@ -35,6 +35,38 @@ interface CurrentUser {
   username: string;
 }
 
+const SESSION_KEY = "se_session";
+const SESSION_DAYS = 3;
+
+function saveSession(user: CurrentUser) {
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({
+      ...user,
+      expiresAt: Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000,
+    }),
+  );
+}
+
+function loadSession(): CurrentUser | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const { expiresAt, ...user } = JSON.parse(raw);
+    if (Date.now() > expiresAt) {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    return user;
+  } catch {
+    return null;
+  }
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
 export default function SweetEnvelope() {
   const [page, setPage] = useState<Page>("login");
   const [tab, setTab] = useState<Tab>("write");
@@ -124,6 +156,7 @@ export default function SweetEnvelope() {
       }
       const data = await r.json();
       setCurrentUser(data);
+      saveSession(data);
       setLoginUser("");
       setLoginPass("");
       setTab("write");
@@ -270,6 +303,14 @@ export default function SweetEnvelope() {
     return () => clearInterval(interval);
   }, [currentUser, fetchInbox]);
 
+  useEffect(() => {
+    const saved = loadSession();
+    if (saved) {
+      setCurrentUser(saved);
+      setPage("dashboard");
+    }
+  }, []);
+
   const me = currentUser
     ? PEOPLE.find((p) => p.id === currentUser.personId)
     : null;
@@ -309,6 +350,7 @@ export default function SweetEnvelope() {
             <button
               style={styles.navBtn}
               onClick={() => {
+                clearSession();
                 setCurrentUser(null);
                 setPage("login");
               }}
@@ -1451,16 +1493,18 @@ const styles: Record<string, React.CSSProperties> = {
   textarea: {
     width: "100%",
     minHeight: 210,
-    padding: "12px 16px",
+    paddingTop: "8px",
+    paddingBottom: "14px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
     border: "1.5px dashed #FFB7C5",
     borderRadius: 18,
     fontSize: 15,
-    lineHeight: "28px",
+    lineHeight: "29px",
     color: "#5A4A6A",
     background:
-      "linear-gradient(transparent calc(28px - 1px), rgba(255,183,197,0.4) calc(28px - 1px), rgba(255,183,197,0.4) 28px, transparent 28px)",
-    backgroundSize: "100% 28px",
-    backgroundPositionY: "12px", // ← ตรงกับ padding-top
+      "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.35) 28px, rgba(255,183,197,0.35) 29px)",
+    backgroundPosition: "0 8px",
     backgroundAttachment: "local",
     outline: "none",
     resize: "vertical",
@@ -1557,14 +1601,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   modalBody: {
     fontSize: 16,
-    lineHeight: "28px",
+    lineHeight: "29px",
     color: "#5A4A6A",
     background:
-      "linear-gradient(transparent calc(28px - 1px), rgba(255,183,197,0.3) calc(28px - 1px), rgba(255,183,197,0.3) 28px, transparent 28px)",
-    backgroundSize: "100% 28px",
-    backgroundPositionY: "8px", // ← ตรงกับ padding-top
+      "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.2) 28px,rgba(255,183,197,0.2) 29px)",
+    backgroundPosition: "0 8px",
     backgroundAttachment: "local",
-    padding: "8px 14px",
+    padding: "8px 10px",
     borderRadius: 12,
     minHeight: 120,
     whiteSpace: "pre-wrap",
