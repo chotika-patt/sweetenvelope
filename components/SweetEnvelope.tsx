@@ -1013,31 +1013,27 @@ export default function SweetEnvelope() {
     }
   }
 `}
-        {/* ── FOOTER ── */}
-        <footer
-          style={{
-            textAlign: "center",
-            padding: "20px",
-            fontSize: 13,
-            color: "#9B8AAB",
-            marginTop: 20,
-          }}
-        >
-          หากพบปัญหาติดต่อ{" "}
-          <a
-            href="https://instagram.com/_k.xt0r"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#E8748A",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            @_k.xt0r
-          </a>
-        </footer>
       </style>
+      {/* ── FOOTER ── */}
+      <footer
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          fontSize: 13,
+          color: "#9B8AAB",
+          marginTop: 20,
+        }}
+      >
+        หากพบปัญหาติดต่อ{" "}
+        <a
+          href="https://instagram.com/_k.xt0r"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#E8748A", fontWeight: 600, textDecoration: "none" }}
+        >
+          @_k.xt0r
+        </a>
+      </footer>
     </>
   );
 }
