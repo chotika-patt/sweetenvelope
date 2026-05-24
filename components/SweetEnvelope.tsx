@@ -280,7 +280,22 @@ export default function SweetEnvelope() {
         <div>
           {/* greeting */}
           <div style={styles.dashHero}>
-            <div style={styles.dashAvatar}>{me?.emoji ?? "👤"}</div>
+            <div style={styles.dashAvatar}>
+              {me?.photo ? (
+                <img
+                  src={me.photo}
+                  alt={me.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                  }}
+                />
+              ) : (
+                (me?.emoji ?? "👤")
+              )}
+            </div>
             <div>
               <div
                 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)" }}
