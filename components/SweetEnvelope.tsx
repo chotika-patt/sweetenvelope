@@ -321,7 +321,7 @@ export default function SweetEnvelope() {
                   style={{
                     ...styles.tabBtn,
                     ...(tab === t ? styles.tabActive : {}),
-                  }} 
+                  }}
                   className="tab-btn"
                   onClick={() => switchTab(t)}
                 >
@@ -362,7 +362,10 @@ export default function SweetEnvelope() {
                           (e.key === "Enter" || e.key === " ") && openWrite(p)
                         }
                       >
-                        <div style={styles.personAvatar} className="person-avatar">
+                        <div
+                          style={styles.personAvatar}
+                          className="person-avatar"
+                        >
                           {p.photo ? (
                             <Image
                               src={p.photo}
@@ -1135,11 +1138,12 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1.5px dashed #FFB7C5",
     borderRadius: 18,
     fontSize: 15,
-    lineHeight: 1.85,
+    lineHeight: "29px",
     color: "#5A4A6A",
     background:
-      "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.25) 28px,rgba(255,183,197,0.25) 29px)",
-    backgroundPosition: "0 36px",
+      "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.25) 28px, rgba(255,183,197,0.25) 29px)",
+    backgroundPosition: "0 0", 
+    backgroundAttachment: "local", 
     outline: "none",
     resize: "vertical",
   },
