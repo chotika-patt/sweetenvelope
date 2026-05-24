@@ -744,13 +744,23 @@ export default function SweetEnvelope() {
             <div style={{ marginBottom: 18 }}>
               <div style={styles.formLabel}>✏️ ชื่อของคุณ</div>
               <input
-                style={{ ...styles.input, opacity: anon ? 0.4 : 1 }}
+                style={{
+                  ...styles.input,
+                  opacity: anon ? 0.4 : 1,
+                  borderColor:
+                    !anon && !senderName.trim() ? "#E8748A" : "#FFE4EC",
+                }}
                 placeholder="ใส่ชื่อของคุณ..."
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
                 disabled={anon}
                 maxLength={50}
               />
+              {!anon && !senderName.trim() && (
+                <div style={{ fontSize: 12, color: "#E8748A", marginTop: 5 }}>
+                  ⚠️ กรุณาใส่ชื่อก่อนส่งนะ
+                </div>
+              )}
             </div>
 
             {/* letter body */}
@@ -802,7 +812,6 @@ export default function SweetEnvelope() {
               disabled={
                 sending || !letterBody.trim() || (!anon && !senderName.trim())
               }
-              
             >
               {sending ? "⏳ กำลังส่ง..." : "📮 ส่งซองกระจก"}
             </button>
