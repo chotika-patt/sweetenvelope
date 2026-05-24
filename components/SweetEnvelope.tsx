@@ -52,6 +52,7 @@ export default function SweetEnvelope() {
   const [sent, setSent] = useState<Letter[]>([]);
   const [inboxLoading, setInboxLoading] = useState(false);
   const [sentLoading, setSentLoading] = useState(false);
+  const [unreadCount, setUnreadCount]   = useState(0); 
 
   /* write form */
   const [letterBody, setLetterBody] = useState("");
@@ -69,7 +70,9 @@ export default function SweetEnvelope() {
     try {
       const r = await fetch(`/api/letters?to=${personId}`);
       const d = await r.json();
-      setInbox(d.letters ?? []);
+      const letters = d.letters ?? [];
+      setInbox(letters);
+      setUnreadCount(letters.filter((l: Letter) => !l.read).length); // ← เพิ่มบรรทัดนี้
     } finally {
       setInboxLoading(false);
     }
@@ -147,6 +150,7 @@ export default function SweetEnvelope() {
           sentByPersonId: currentUser?.personId ?? null,
         }),
       });
+      if (currentPerson) localStorage.removeItem(`draft_${currentPerson.id}`);
       setPage("success");
     } finally {
       setSending(false);
@@ -160,28 +164,77 @@ export default function SweetEnvelope() {
     setInbox((prev) =>
       prev.map((l) => (l.id === letter.id ? { ...l, read: true } : l)),
     );
+    setUnreadCount((prev) => Math.max(0, prev - 1)); // ← เพิ่มบรรทัดนี้
   };
 
   /* ── open write page ── */
+  /* ── draft key ── */
+  const draftKey = currentPerson ? `draft_${currentPerson.id}` : null;
+
+  /* ── โหลด draft เมื่อเปิดหน้าเขียน ── */
   const openWrite = (p: Person) => {
     setCurrentPerson(p);
-    setLetterBody("");
     setAnon(false);
     const me = currentUser
       ? PEOPLE.find((x) => x.id === currentUser.personId)
       : null;
     setSenderName(me?.name ?? "");
+
+    // โหลด draft ถ้ามี
+    const saved = localStorage.getItem(`draft_${p.id}`);
+    if (saved) {
+      try {
+        const { body, anon: savedAnon, name } = JSON.parse(saved);
+        setLetterBody(body ?? "");
+        setAnon(savedAnon ?? false);
+        if (!savedAnon) setSenderName(name ?? me?.name ?? "");
+      } catch {
+        setLetterBody("");
+      }
+    } else {
+      setLetterBody("");
+    }
+
     setPage("write-letter");
   };
+
+  /* ── auto-save draft ทุกครั้งที่พิมพ์ ── */
+  useEffect(() => {
+    if (page !== "write-letter" || !currentPerson) return;
+    const key = `draft_${currentPerson.id}`;
+    if (!letterBody && !anon) {
+      localStorage.removeItem(key);
+      return;
+    }
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        body: letterBody,
+        anon,
+        name: senderName,
+      }),
+    );
+  }, [letterBody, anon, senderName, currentPerson, page]);
 
   /* ── written-to set ── */
   const writtenTo = new Set(sent.map((l) => l.to));
 
-  /* ── load sent on mount after login ── */
+  /* ── load on mount after login ── */
   useEffect(() => {
-    if (currentUser && page === "dashboard") fetchSent(currentUser.personId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (currentUser && page === "dashboard") {
+      fetchSent(currentUser.personId);
+      fetchInbox(currentUser.personId); // ← เปลี่ยนจาก fetchUnreadCount
+    }
   }, [currentUser]);
+
+  /* ── polling badge ทุก 30 วิ ── */
+  useEffect(() => {
+    if (!currentUser) return;
+    const interval = setInterval(() => {
+      fetchInbox(currentUser.personId);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [currentUser, fetchInbox]);
 
   const me = currentUser
     ? PEOPLE.find((p) => p.id === currentUser.personId)
@@ -281,18 +334,46 @@ export default function SweetEnvelope() {
         <div>
           {/* greeting */}
           <div style={styles.dashHero} className="dash-hero">
-            <div style={styles.dashAvatar}>
-              {me?.photo ? (
-                <Image
-                  src={me.photo}
-                  alt={me.name}
-                  width={72}
-                  height={72}
-                  priority // โหลดก่อนเลย ไม่ lazy
-                  style={{ objectFit: "cover", borderRadius: "50%" }}
-                />
-              ) : (
-                (me?.emoji ?? "👤")
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div style={styles.dashAvatar}>
+                {me?.photo ? (
+                  <img
+                    src={me.photo}
+                    alt={me.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
+                  />
+                ) : (
+                  (me?.emoji ?? "👤")
+                )}
+              </div>
+              {/* จุดแจ้งเตือน */}
+              {unreadCount > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -2,
+                    right: -2,
+                    background: "#E8748A",
+                    color: "#fff",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    borderRadius: 999,
+                    minWidth: 20,
+                    height: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px solid #fff",
+                    padding: "0 4px",
+                  }}
+                >
+                  {unreadCount}
+                </div>
               )}
             </div>
             <div>
@@ -300,9 +381,6 @@ export default function SweetEnvelope() {
                 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)" }}
               >
                 สวัสดี, {me?.name ?? currentUser.username}! 👋
-              </div>
-              <div style={{ fontSize: 14, color: "var(--text-light)" }}>
-                อยากทำอะไรวันนี้? 💕
               </div>
             </div>
           </div>
@@ -312,9 +390,10 @@ export default function SweetEnvelope() {
             {(["write", "inbox", "sent"] as Tab[]).map((t) => {
               const labels: Record<Tab, string> = {
                 write: "✉️ เขียนถึงใครสักคน",
-                inbox: `📬 กล่องจดหมาย${tab === "inbox" && unread > 0 ? ` (${unread})` : ""}`,
+                inbox: "📬 กล่องจดหมาย",
                 sent: "📤 ที่เคยส่งไป",
               };
+
               return (
                 <button
                   key={t}
@@ -326,6 +405,25 @@ export default function SweetEnvelope() {
                   onClick={() => switchTab(t)}
                 >
                   {labels[t]}
+                  {/* badge unread */}
+                  {t === "inbox" && unreadCount > 0 && (
+                    <span
+                      style={{
+                        marginLeft: 6,
+                        background: "#E8748A",
+                        color: "#fff",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        borderRadius: 999,
+                        padding: "1px 7px",
+                        verticalAlign: "middle",
+                        display: "inline-block",
+                        lineHeight: "18px",
+                      }}
+                    >
+                      {unreadCount}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -627,7 +725,21 @@ export default function SweetEnvelope() {
 
             {/* letter body */}
             <div style={{ marginBottom: 18 }}>
-              <div style={styles.formLabel}>💬 เนื้อหาจดหมาย</div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 7,
+                }}
+              >
+                <div style={styles.formLabel}>💬 เนื้อหาจดหมาย</div>
+                {letterBody.length > 0 && (
+                  <div style={{ fontSize: 11, color: "#9B8AAB" }}>
+                    ✓ บันทึกอัตโนมัติแล้ว
+                  </div>
+                )}
+              </div>
               <textarea
                 style={styles.textarea}
                 placeholder="เขียนความรู้สึกของคุณที่นี่... 🌸"
@@ -1134,16 +1246,19 @@ const styles: Record<string, React.CSSProperties> = {
   textarea: {
     width: "100%",
     minHeight: 210,
-    padding: "14px 16px",
+    paddingTop: "8px",
+    paddingBottom: "14px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
     border: "1.5px dashed #FFB7C5",
     borderRadius: 18,
     fontSize: 15,
     lineHeight: "29px",
     color: "#5A4A6A",
     background:
-      "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.25) 28px, rgba(255,183,197,0.25) 29px)",
-    backgroundPosition: "0 0", 
-    backgroundAttachment: "local", 
+      "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.35) 28px, rgba(255,183,197,0.35) 29px)",
+    backgroundPosition: "0 0",
+    backgroundAttachment: "local",
     outline: "none",
     resize: "vertical",
   },
