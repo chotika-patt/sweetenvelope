@@ -1504,7 +1504,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#5A4A6A",
     background:
       "repeating-linear-gradient(transparent, transparent 28px, rgba(255,183,197,0.35) 28px, rgba(255,183,197,0.35) 29px)",
-    backgroundPosition: "0 8px",
+    backgroundPosition: "0px 0px",
     backgroundAttachment: "local",
     outline: "none",
     resize: "vertical",
@@ -1605,7 +1605,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#5A4A6A",
     background:
       "repeating-linear-gradient(transparent,transparent 28px,rgba(255,183,197,0.2) 28px,rgba(255,183,197,0.2) 29px)",
-    backgroundPosition: "0 8px",
+    backgroundPosition: "0px 0px",
     backgroundAttachment: "local",
     padding: "8px 10px",
     borderRadius: 12,
